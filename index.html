@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📐 Rolle's Theorem & MVT - رياضيات 12 متقدم | Mr. Mohammed Hesham</title>
+<meta name="description" content="امتحان كتابي تفاعلي عن نظرية رول ونظرية القيمة المتوسطة - رياضيات 12 متقدم">
+<meta name="author" content="Mr. Mohammed Hesham">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body { font-family: 'Cairo', sans-serif; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); }
+body.en-mode { font-family: 'Inter', sans-serif; }
+.arabic-math { font-family: 'Amiri', 'Cairo', serif; }
+.correct { background-color: #dcfce7 !important; border-color: #16a34a !important; }
+.incorrect { background-color: #fee2e2 !important; border-color: #dc2626 !important; }
+.timer-warning { color: #dc2626 !important; animation: pulse 1s infinite; }
+@keyframes pulse { 50% { opacity: 0.7; } }
+@media print { .no-print { display: none !important; } }
+.success-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.875rem; }
+.grade-excellent { background: #dcfce7; color: #166534; }
+.grade-good { background: #fef3c7; color: #92400e; }
+.grade-pass { background: #dbeafe; color: #1e40af; }
+.grade-fail { background: #fee2e2; color: #991b1b; }
+.lang-switch { position: fixed; top: 16px; left: 16px; z-index: 100; background: white; padding: 6px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: flex; gap: 4px; border: 2px solid #d97706; }
+[dir="ltr"] .lang-switch { left: auto; right: 16px; }
+.lang-btn { padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: all 0.3s; border: none; font-size: 0.875rem; background: transparent; color: #6b7280; }
+.lang-btn.active { background: #d97706; color: white; box-shadow: 0 2px 6px rgba(217,119,6,0.4); }
+.shuffle-badge { display: inline-block; background: linear-gradient(135deg, #d97706, #b45309); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; margin-right: 8px; }
+.math-display { display: inline-block; direction: ltr; font-family: 'Amiri', serif; font-size: 1.1em; padding: 2px 6px; background: #fef3c7; border-radius: 4px; margin: 2px; color: #92400e; font-weight: 600; }
+.save-indicator { position: fixed; bottom: 20px; left: 20px; z-index: 200; background: #10b981; color: white; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+.save-indicator.show { opacity: 1; }
+.formula-box { background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 12px; margin: 10px 0; font-family: 'Amiri', serif; direction: ltr; text-align: center; }
+.svg-graph { display: block; margin: 12px auto; background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 8px; }
+.graph-container { text-align: center; margin: 10px 0; }
+.module-badge { display: inline-block; padding: 4px 16px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; margin-bottom: 8px; }
+.module-1 { background: #fef3c7; color: #92400e; }
+.module-2 { background: #dbeafe; color: #1e40af; }
+.module-3 { background: #fce7f3; color: #9f1239; }
+.module-4 { background: #ecfdf5; color: #065f46; }
+.answer-input { width: 100%; min-height: 100px; padding: 12px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; font-family: 'Amiri', serif; direction: ltr; text-align: center; background: white; transition: border-color 0.3s; resize: vertical; }
+.answer-input:focus { outline: none; border-color: #d97706; box-shadow: 0 0 0 3px rgba(217,119,6,0.1); }
+.answer-input.correct-input { border-color: #16a34a; background: #dcfce7; }
+.answer-input.incorrect-input { border-color: #dc2626; background: #fee2e2; }
+.check-btn { background: linear-gradient(135deg, #d97706, #b45309); color: white; padding: 8px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.3s; border: none; }
+.check-btn:hover { background: linear-gradient(135deg, #b45309, #92400e); transform: scale(1.05); }
+.show-answer-btn { background: #6b7280; color: white; padding: 6px 16px; border-radius: 8px; font-size: 0.875rem; cursor: pointer; border: none; margin-top: 8px; }
+.show-answer-btn:hover { background: #4b5563; }
+.solution-box { background: #f0fdf4; border: 2px solid #16a34a; border-radius: 8px; padding: 12px; margin-top: 10px; display: none; }
+.solution-box.show { display: block; }
+</style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+
+<div class="lang-switch no-print">
+<button class="lang-btn active" onclick="setLanguage('ar')" id="btn-ar">عربي</button>
+<button class="lang-btn" onclick="setLanguage('en')" id="btn-en">EN</button>
+</div>
+
+<div id="saveIndicator" class="save-indicator">💾 <span data-ar="تم الحفظ" data-en="Saved">تم الحفظ</span></div>
+
+<div id="timer-container" class="max-w-5xl mx-auto mb-4 text-center no-print">
+<div class="bg-white p-4 rounded-2xl shadow-lg inline-block border-2 border-amber-100">
+<span class="text-gray-600 ml-2">⏰ الوقت المتبقي:</span>
+<span id="timer" class="text-2xl font-bold text-amber-700 font-mono">120:00</span>
+<span class="shuffle-badge">📐 Rolle's & MVT Written Exam - 20 سؤال</span>
+</div>
+</div>
+
+<div class="max-w-5xl mx-auto mb-6 flex flex-wrap gap-3 justify-center no-print">
+<button onclick="checkAllAnswers()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-5 py-2 rounded-xl font-medium transition shadow">✅ تحقق من جميع الإجابات</button>
+<button onclick="showAllSolutions()" class="bg-blue-700 hover:bg-blue-800 text-white px-5 py-2 rounded-xl font-medium transition shadow">📖 إظهار جميع الحلول</button>
+<button onclick="window.print()" class="bg-gray-700 hover:bg-gray-900 text-white px-5 py-2 rounded-xl font-medium transition shadow">🖨️ طباعة</button>
+<button onclick="clearAllAnswers()" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-xl font-medium transition shadow">🗑️ مسح جميع الإجابات</button>
+</div>
+
+<header class="max-w-5xl mx-auto bg-white p-8 rounded-3xl shadow-2xl mb-8 border-4 border-amber-500">
+<div class="text-center">
+<div class="inline-block bg-amber-700 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">MATH 12 ADVANCED - QUESTION 26</div>
+<h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">📐 نظرية رول ونظرية القيمة المتوسطة</h1>
+<h2 class="text-xl text-amber-700 font-semibold mb-2">رياضيات 12 متقدم - تمارين 1-6</h2>
+<p class="text-gray-600 mb-4">Rolle's Theorem & Mean Value Theorem - Verification & Finding c</p>
+<p class="text-sm text-green-600 font-semibold">✍️ امتحان كتابي - 20 سؤالاً في 4 أقسام - اكتب إجابتك في الخانات</p>
+</div>
+<div class="mt-6 flex flex-wrap justify-center gap-4 text-sm text-gray-600">
+<span>📅 التاريخ: <input type="text" id="examDate" class="border-b-2 border-amber-300 bg-transparent w-32 text-center"></span>
+<span>😊 الاسم: <input type="text" id="studentName" class="border-b-2 border-amber-300 bg-transparent w-40 text-center" placeholder="اكتب اسمك"></span>
+<span>🏫 الشعبة: <input type="text" id="studentClass" class="border-b-2 border-amber-300 bg-transparent w-32 text-center" placeholder="الشعبة"></span>
+<span>⏰ المدة: 120 دقيقة</span>
+<span>📊 المجموع: 100 درجة</span>
+</div>
+</header>
+
+<div class="max-w-5xl mx-auto mb-6 bg-white p-4 rounded-xl shadow-lg border-2 border-amber-200 no-print">
+<h3 class="font-bold text-lg mb-3 text-amber-800 text-center">📐 النظريات الأساسية</h3>
+<div class="grid md:grid-cols-3 gap-3 text-sm">
+<div class="formula-box"><strong>Rolle's Theorem:</strong><br>If f(a)=f(b), ∃c∈(a,b): f'(c)=0</div>
+<div class="formula-box"><strong>MVT:</strong><br>f'(c) = [f(b)-f(a)]/(b-a)</div>
+<div class="formula-box"><strong>Conditions:</strong><br>Continuous on [a,b], Differentiable on (a,b)</div>
+</div>
+</div>
+
+<main class="max-w-5xl mx-auto space-y-8" id="exam-content"></main>
+
+<div class="text-center no-print pb-8 mt-8">
+<button onclick="gradeExam()" class="bg-gradient-to-r from-amber-700 to-orange-600 hover:from-amber-800 hover:to-orange-700 text-white text-lg px-12 py-4 rounded-2xl font-bold shadow-xl transition transform hover:scale-105">🎯 صحح الامتحان!</button>
+</div>
+
+<div id="results-panel" class="max-w-5xl mx-auto mt-8 bg-white p-8 rounded-3xl shadow-2xl border-4 border-amber-500 hidden no-print">
+<h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">🏆 نتيجتك يا بطل! 🏆</h2>
+<div class="grid md:grid-cols-3 gap-4 mb-6">
+<div class="bg-amber-50 p-4 rounded-xl text-center"><p>😊 الاسم</p><p id="res-name" class="font-bold text-xl text-amber-700">-</p></div>
+<div class="bg-orange-50 p-4 rounded-xl text-center"><p>📅 التاريخ</p><p id="res-date" class="font-bold text-xl text-orange-700">-</p></div>
+<div class="bg-amber-50 p-4 rounded-xl text-center"><p>🌟 المجموع</p><p id="res-total" class="font-bold text-3xl text-amber-700">0 / 100</p></div>
+</div>
+<div class="text-center mb-6">
+<span id="success-badge" class="success-badge grade-excellent">-</span>
+<p id="success-percent" class="text-4xl font-bold text-amber-700 mt-2">0%</p>
+<p class="text-sm text-gray-500">نسبة النجاح</p>
+</div>
+<div class="bg-gray-50 p-6 rounded-xl mb-6">
+<h3 class="font-bold text-lg mb-4 text-gray-800">📊 أدائك في كل قسم:</h3>
+<div class="space-y-3" id="sections-performance"></div>
+</div>
+<div class="text-center">
+<button id="sendEmailBtn" onclick="sendResultsToEmail()" class="bg-gradient-to-r from-amber-700 to-orange-600 text-white text-lg px-8 py-3 rounded-2xl font-bold shadow-xl transition">📧 أرسل النتيجة للمعلم</button>
+<p id="emailStatus" class="text-sm mt-2 text-center font-medium"></p>
+</div>
+</div>
+
+<footer class="max-w-5xl mx-auto mt-10 mb-8 text-center text-gray-500 text-sm no-print">
+© Rolle's Theorem & MVT - Grade 12 Advanced | Mr. Mohammed Hesham 📐
+</footer>
+
+<script>
+const PUBLIC_KEY = "Rb3Lq8tXaFmc5YHUH";
+const SERVICE_ID = "service_w15m64i";
+const TEMPLATE_ID = "template_5b0u2tq";
+const TARGET_EMAIL = "mohammedhesham872@gmail.com";
+emailjs.init(PUBLIC_KEY);
+
+const STORAGE_KEY = 'rolle_mvt_written_exam_grade12_v2';
+const TOTAL_TIME = 7200;
+const TOTAL_QUESTIONS = 20;
+const TOTAL_SECTIONS = 4;
+
+let currentLang = 'ar';
+let timeRemaining = TOTAL_TIME;
+let timerInterval;
+let saveIndicatorTimeout = null;
+
+// ==================== SVG DIAGRAMS ====================
+const svgGraphs = {
+    rolle_theorem: `<svg class="svg-graph" width="400" height="260" viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="390" height="250" rx="12" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+        <text x="200" y="25" text-anchor="middle" font-size="14" fill="#92400e" font-weight="bold">📐 نظرية رول - Rolle's Theorem</text>
+        <line x1="50" y1="220" x2="370" y2="220" stroke="#374151" stroke-width="2" marker-end="url(#arrow1)"/>
+        <line x1="50" y1="220" x2="50" y2="40" stroke="#374151" stroke-width="2" marker-end="url(#arrow1)"/>
+        <text x="380" y="225" font-size="12" fill="#374151">x</text>
+        <text x="40" y="35" font-size="12" fill="#374151">y</text>
+        <!-- Curve with f(a)=f(b) -->
+        <path d="M 80 180 Q 150 100 200 120 Q 250 140 320 180" fill="none" stroke="#7c3aed" stroke-width="3"/>
+        <text x="300" y="170" font-size="11" fill="#7c3aed" font-weight="bold">y = f(x)</text>
+        <!-- Points a and b -->
+        <circle cx="80" cy="180" r="6" fill="#dc2626"/>
+        <text x="80" y="200" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="bold">a</text>
+        <circle cx="320" cy="180" r="6" fill="#dc2626"/>
+        <text x="320" y="200" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="bold">b</text>
+        <text x="80" y="170" text-anchor="middle" font-size="10" fill="#dc2626">f(a)</text>
+        <text x="320" y="170" text-anchor="middle" font-size="10" fill="#dc2626">f(b)</text>
+        <!-- Horizontal line showing f(a)=f(b) -->
+        <line x1="80" y1="180" x2="320" y2="180" stroke="#dc2626" stroke-width="1" stroke-dasharray="4"/>
+        <!-- Point c where f'(c)=0 -->
+        <circle cx="200" cy="120" r="6" fill="#10b981"/>
+        <text x="200" y="105" text-anchor="middle" font-size="11" fill="#10b981" font-weight="bold">c</text>
+        <!-- Horizontal tangent at c -->
+        <line x1="160" y1="120" x2="240" y2="120" stroke="#10b981" stroke-width="2"/>
+        <text x="200" y="245" text-anchor="middle" font-size="11" fill="#92400e">f(a) = f(b) → ∃c ∈ (a,b): f'(c) = 0</text>
+        <defs><marker id="arrow1" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#374151"/></marker></defs>
+    </svg>`,
+    
+    mvt_theorem: `<svg class="svg-graph" width="400" height="280" viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="390" height="270" rx="12" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+        <text x="200" y="25" text-anchor="middle" font-size="14" fill="#1e40af" font-weight="bold">📐 نظرية القيمة المتوسطة - MVT</text>
+        <line x1="50" y1="240" x2="370" y2="240" stroke="#374151" stroke-width="2" marker-end="url(#arrow2)"/>
+        <line x1="50" y1="240" x2="50" y2="40" stroke="#374151" stroke-width="2" marker-end="url(#arrow2)"/>
+        <text x="380" y="245" font-size="12" fill="#374151">x</text>
+        <text x="40" y="35" font-size="12" fill="#374151">y</text>
+        <!-- Curve -->
+        <path d="M 80 200 Q 150 150 200 130 Q 250 110 300 100 Q 340 90 360 120" fill="none" stroke="#7c3aed" stroke-width="3"/>
+        <text x="340" y="80" font-size="11" fill="#7c3aed" font-weight="bold">y = f(x)</text>
+        <!-- Secant line from (a,f(a)) to (b,f(b)) -->
+        <line x1="80" y1="200" x2="360" y2="120" stroke="#dc2626" stroke-width="2" stroke-dasharray="5"/>
+        <text x="220" y="170" font-size="10" fill="#dc2626" font-weight="bold">Secant line</text>
+        <!-- Points a and b -->
+        <circle cx="80" cy="200" r="6" fill="#dc2626"/>
+        <text x="80" y="220" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="bold">a</text>
+        <circle cx="360" cy="120" r="6" fill="#dc2626"/>
+        <text x="360" y="140" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="bold">b</text>
+        <!-- Point c where tangent is parallel to secant -->
+        <circle cx="250" cy="110" r="6" fill="#10b981"/>
+        <text x="250" y="95" text-anchor="middle" font-size="11" fill="#10b981" font-weight="bold">c</text>
+        <!-- Tangent line at c (parallel to secant) -->
+        <line x1="200" y1="125" x2="300" y2="95" stroke="#10b981" stroke-width="2"/>
+        <text x="200" y="260" text-anchor="middle" font-size="11" fill="#1e40af">f'(c) = [f(b)-f(a)]/(b-a)</text>
+        <defs><marker id="arrow2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#374151"/></marker></defs>
+    </svg>`,
+    
+    exercise_1: `<svg class="svg-graph" width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="390" height="290" rx="12" fill="#fce7f3" stroke="#ec4899" stroke-width="2"/>
+        <text x="200" y="25" text-anchor="middle" font-size="14" fill="#9f1239" font-weight="bold">📝 تمرين 1: f(x) = x² + 1, [-2, 2]</text>
+        <line x1="50" y1="260" x2="370" y2="260" stroke="#374151" stroke-width="2" marker-end="url(#arrow3)"/>
+        <line x1="200" y1="260" x2="200" y2="40" stroke="#374151" stroke-width="2" marker-end="url(#arrow3)"/>
+        <text x="380" y="265" font-size="12" fill="#374151">x</text>
+        <text x="190" y="35" font-size="12" fill="#374151">y</text>
+        <!-- Parabola y = x² + 1 -->
+        <path d="M 80 220 Q 140 100 200 60 Q 260 100 320 220" fill="none" stroke="#7c3aed" stroke-width="3"/>
+        <text x="300" y="90" font-size="11" fill="#7c3aed" font-weight="bold">y = x² + 1</text>
+        <!-- Points at x=-2 and x=2 -->
+        <circle cx="100" cy="220" r="6" fill="#dc2626"/>
+        <text x="100" y="240" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="bold">(-2, 5)</text>
+        <circle cx="300" cy="220" r="6" fill="#dc2626"/>
+        <text x="300" y="240" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="bold">(2, 5)</text>
+        <!-- Point c = 0 -->
+        <circle cx="200" cy="60" r="6" fill="#10b981"/>
+        <text x="200" y="45" text-anchor="middle" font-size="10" fill="#10b981" font-weight="bold">c = 0</text>
+        <!-- Horizontal tangent at c=0 -->
+        <line x1="160" y1="60" x2="240" y2="60" stroke="#10b981" stroke-width="2"/>
+        <text x="200" y="285" text-anchor="middle" font-size="11" fill="#9f1239">f(-2) = f(2) = 5, c = 0, f'(0) = 0 ✓</text>
+        <defs><marker id="arrow3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#374151"/></marker></defs>
+    </svg>`,
+    
+    exercise_3: `<svg class="svg-graph" width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="390" height="290" rx="12" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+        <text x="200" y="25" text-anchor="middle" font-size="14" fill="#065f46" font-weight="bold">📝 تمرين 3: f(x) = x³ + x², [0, 1]</text>
+        <line x1="50" y1="260" x2="370" y2="260" stroke="#374151" stroke-width="2" marker-end="url(#arrow4)"/>
+        <line x1="50" y1="260" x2="50" y2="40" stroke="#374151" stroke-width="2" marker-end="url(#arrow4)"/>
+        <text x="380" y="265" font-size="12" fill="#374151">x</text>
+        <text x="40" y="35" font-size="12" fill="#374151">y</text>
+        <!-- Curve y = x³ + x² -->
+        <path d="M 50 260 Q 150 240 200 200 Q 280 130 350 60" fill="none" stroke="#10b981" stroke-width="3"/>
+        <text x="320" y="80" font-size="11" fill="#10b981" font-weight="bold">y = x³ + x²</text>
+        <!-- Points at x=0 and x=1 -->
+        <circle cx="50" cy="260" r="6" fill="#dc2626"/>
+        <text x="50" y="280" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="bold">(0, 0)</text>
+        <circle cx="200" cy="200" r="6" fill="#dc2626"/>
+        <text x="200" y="220" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="bold">(1, 2)</text>
+        <!-- Secant line -->
+        <line x1="50" y1="260" x2="200" y2="200" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4"/>
+        <!-- Point c where tangent parallel to secant -->
+        <circle cx="130" cy="230" r="6" fill="#f59e0b"/>
+        <text x="130" y="250" text-anchor="middle" font-size="10" fill="#f59e0b" font-weight="bold">c = -1/3+√(1/3+1/3)...</text>
+        <text x="200" y="285" text-anchor="middle" font-size="11" fill="#065f46">MVT: f'(c) = [f(1)-f(0)]/(1-0) = 2</text>
+        <defs><marker id="arrow4" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#374151"/></marker></defs>
+    </svg>`,
+    
+    exercise_5: `<svg class="svg-graph" width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="390" height="290" rx="12" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+        <text x="200" y="25" text-anchor="middle" font-size="14" fill="#5b21b6" font-weight="bold">📝 تمرين 5: f(x) = sin x, [0, π/2]</text>
+        <line x1="50" y1="260" x2="370" y2="260" stroke="#374151" stroke-width="2" marker-end="url(#arrow5)"/>
+        <line x1="50" y1="260" x2="50" y2="40" stroke="#374151" stroke-width="2" marker-end="url(#arrow5)"/>
+        <text x="380" y="265" font-size="12" fill="#374151">x</text>
+        <text x="40" y="35" font-size="12" fill="#374151">y</text>
+        <!-- Sine curve from 0 to π/2 -->
+        <path d="M 50 260 Q 120 200 200 100 Q 280 60 350 60" fill="none" stroke="#7c3aed" stroke-width="3"/>
+        <text x="320" y="80" font-size="11" fill="#7c3aed" font-weight="bold">y = sin x</text>
+        <!-- Points at x=0 and x=π/2 -->
+        <circle cx="50" cy="260" r="6" fill="#dc2626"/>
+        <text x="50" y="280" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="bold">(0, 0)</text>
+        <circle cx="350" cy="60" r="6" fill="#dc2626"/>
+        <text x="350" y="45" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="bold">(π/2, 1)</text>
+        <!-- Secant line -->
+        <line x1="50" y1="260" x2="350" y2="60" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4"/>
+        <text x="200" y="285" text-anchor="middle" font-size="11" fill="#5b21b6">MVT: f'(c) = cos(c) = 2/π, c = arccos(2/π)</text>
+        <defs><marker id="arrow5" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#374151"/></marker></defs>
+    </svg>`,
+    
+    conditions_check: `<svg class="svg-graph" width="400" height="260" viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="390" height="250" rx="12" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+        <text x="200" y="25" text-anchor="middle" font-size="14" fill="#991b1b" font-weight="bold">📋 شروط النظريتين</text>
+        <rect x="20" y="45" width="170" height="180" rx="6" fill="#fecaca" stroke="#dc2626" stroke-width="2"/>
+        <text x="105" y="65" text-anchor="middle" font-size="12" fill="#991b1b" font-weight="bold">Rolle's Theorem</text>
+        <text x="105" y="85" text-anchor="middle" font-size="10" fill="#991b1b">1. Continuous on [a,b] ✓</text>
+        <text x="105" y="100" text-anchor="middle" font-size="10" fill="#991b1b">2. Differentiable on (a,b) ✓</text>
+        <text x="105" y="115" text-anchor="middle" font-size="10" fill="#991b1b">3. f(a) = f(b) ✓</text>
+        <text x="105" y="140" text-anchor="middle" font-size="10" fill="#991b1b">Conclusion:</text>
+        <text x="105" y="155" text-anchor="middle" font-size="10" fill="#991b1b">∃c ∈ (a,b): f'(c) = 0</text>
+        <rect x="210" y="45" width="170" height="180" rx="6" fill="#fecaca" stroke="#dc2626" stroke-width="2"/>
+        <text x="295" y="65" text-anchor="middle" font-size="12" fill="#991b1b" font-weight="bold">Mean Value Theorem</text>
+        <text x="295" y="85" text-anchor="middle" font-size="10" fill="#991b1b">1. Continuous on [a,b] ✓</text>
+        <text x="295" y="100" text-anchor="middle" font-size="10" fill="#991b1b">2. Differentiable on (a,b) ✓</text>
+        <text x="295" y="125" text-anchor="middle" font-size="10" fill="#991b1b">Conclusion:</text>
+        <text x="295" y="145" text-anchor="middle" font-size="10" fill="#991b1b">∃c ∈ (a,b):</text>
+        <text x="295" y="165" text-anchor="middle" font-size="10" fill="#991b1b">f'(c) = [f(b)-f(a)]/(b-a)</text>
+        <text x="200" y="245" text-anchor="middle" font-size="11" fill="#991b1b" font-weight="bold">Rolle is special case of MVT when f(a)=f(b)</text>
+    </svg>`
+};
+
+// ==================== EXAM DATA - 20 WRITTEN QUESTIONS ====================
+const examQuestions = [
+    // Section 1: Exercise 1 - f(x) = x² + 1, [-2, 2]
+    {
+        id: 1, section: 1,
+        q: { ar: '<strong>تمرين 1 (مسألة 1):</strong> f(x) = x² + 1 على [-2, 2]. تحقق من شروط نظرية رول: هل f متصلة على [-2, 2]؟ (نعم/لا)', en: '<strong>Exercise 1 (Problem 1):</strong> f(x) = x² + 1 on [-2, 2]. Verify Rolle\'s conditions: Is f continuous on [-2, 2]? (Yes/No)' },
+        svg: svgGraphs.conditions_check,
+        answer: { ar: 'نعم', en: 'Yes' },
+        solution: { ar: 'نعم، f(x) = x² + 1 كثيرة حدود، وهي متصلة على كل R', en: 'Yes, f(x) = x² + 1 is a polynomial, continuous on all R' }
+    },
+    {
+        id: 2, section: 1,
+        q: { ar: '<strong>تمرين 1 (مسألة 2):</strong> هل f قابلة للاشتقاق على (-2, 2)؟ (نعم/لا)', en: '<strong>Exercise 1 (Problem 2):</strong> Is f differentiable on (-2, 2)? (Yes/No)' },
+        answer: { ar: 'نعم', en: 'Yes' },
+        solution: { ar: 'نعم، كثيرة الحدود قابلة للاشتقاق على كل R', en: 'Yes, polynomials are differentiable on all R' }
+    },
+    {
+        id: 3, section: 1,
+        q: { ar: '<strong>تمرين 1 (مسألة 3):</strong> احسب f(-2) و f(2). هل f(-2) = f(2)؟', en: '<strong>Exercise 1 (Problem 3):</strong> Calculate f(-2) and f(2). Is f(-2) = f(2)?' },
+        svg: svgGraphs.exercise_1,
+        answer: { ar: 'نعم، كلاهما = 5', en: 'Yes, both = 5' },
+        solution: { ar: 'f(-2) = 4+1 = 5, f(2) = 4+1 = 5. إذن f(-2) = f(2) = 5 ✓', en: 'f(-2) = 5, f(2) = 5. So f(-2) = f(2) = 5 ✓' }
+    },
+    {
+        id: 4, section: 1,
+        q: { ar: '<strong>تمرين 1 (مسألة 4):</strong> أوجد قيمة c التي تحقق نظرية رول: f\'(c) = 0.', en: '<strong>Exercise 1 (Problem 4):</strong> Find c satisfying Rolle\'s theorem: f\'(c) = 0.' },
+        answer: { ar: 'c = 0', en: 'c = 0' },
+        solution: { ar: 'f\'(x) = 2x = 0 → x = 0. و 0 ∈ (-2, 2) ✓', en: 'f\'(x) = 2x = 0 → x = 0. And 0 ∈ (-2, 2) ✓' }
+    },
+    {
+        id: 5, section: 1,
+        q: { ar: '<strong>تمرين 1 (مسألة 5):</strong> طبق نظرية القيمة المتوسطة: أوجد c حيث f\'(c) = [f(2)-f(-2)]/[2-(-2)].', en: '<strong>Exercise 1 (Problem 5):</strong> Apply MVT: Find c where f\'(c) = [f(2)-f(-2)]/[2-(-2)].' },
+        answer: { ar: 'c = 0', en: 'c = 0' },
+        solution: { ar: '[f(2)-f(-2)]/[2-(-2)] = (5-5)/4 = 0. f\'(c) = 2c = 0 → c = 0', en: '[f(2)-f(-2)]/[2-(-2)] = 0/4 = 0. f\'(c) = 2c = 0 → c = 0' }
+    },
+    // Section 2: Exercise 2 - f(x) = x² + 1, [0, 2]
+    {
+        id: 6, section: 2,
+        q: { ar: '<strong>تمرين 2 (مسألة 6):</strong> f(x) = x² + 1 على [0, 2]. هل تنطبق نظرية رول؟ (نعم/لا) ولماذا؟', en: '<strong>Exercise 2 (Problem 6):</strong> f(x) = x² + 1 on [0, 2]. Does Rolle\'s theorem apply? (Yes/No) and why?' },
+        answer: { ar: 'لا', en: 'No' },
+        solution: { ar: 'لا، لأن f(0) = 1 و f(2) = 5، إذن f(0) ≠ f(2). الشرط الثالث غير محقق.', en: 'No, because f(0) = 1 and f(2) = 5, so f(0) ≠ f(2). Third condition fails.' }
+    },
+    {
+        id: 7, section: 2,
+        q: { ar: '<strong>تمرين 2 (مسألة 7):</strong> هل تنطبق نظرية القيمة المتوسطة؟ (نعم/لا)', en: '<strong>Exercise 2 (Problem 7):</strong> Does MVT apply? (Yes/No)' },
+        answer: { ar: 'نعم', en: 'Yes' },
+        solution: { ar: 'نعم، f متصلة على [0,2] وقابلة للاشتقاق على (0,2)', en: 'Yes, f is continuous on [0,2] and differentiable on (0,2)' }
+    },
+    {
+        id: 8, section: 2,
+        q: { ar: '<strong>تمرين 2 (مسألة 8):</strong> أوجد c التي تحقق MVT: f\'(c) = [f(2)-f(0)]/[2-0].', en: '<strong>Exercise 2 (Problem 8):</strong> Find c satisfying MVT: f\'(c) = [f(2)-f(0)]/[2-0].' },
+        answer: { ar: 'c = 1', en: 'c = 1' },
+        solution: { ar: '[f(2)-f(0)]/[2-0] = (5-1)/2 = 2. f\'(c) = 2c = 2 → c = 1', en: '[f(2)-f(0)]/[2-0] = 4/2 = 2. f\'(c) = 2c = 2 → c = 1' }
+    },
+    {
+        id: 9, section: 2,
+        q: { ar: '<strong>س مشابه:</strong> f(x) = x² - 4x + 3 على [0, 4]. أوجد c لنظرية رول.', en: '<strong>Similar:</strong> f(x) = x² - 4x + 3 on [0, 4]. Find c for Rolle\'s theorem.' },
+        answer: { ar: 'c = 2', en: 'c = 2' },
+        solution: { ar: 'f(0) = 3, f(4) = 16-16+3 = 3. f\'(x) = 2x-4 = 0 → x = 2', en: 'f(0) = 3, f(4) = 3. f\'(x) = 2x-4 = 0 → x = 2' }
+    },
+    {
+        id: 10, section: 2,
+        q: { ar: '<strong>س مشابه:</strong> f(x) = x² على [1, 3]. أوجد c لنظرية القيمة المتوسطة.', en: '<strong>Similar:</strong> f(x) = x² on [1, 3]. Find c for MVT.' },
+        answer: { ar: 'c = 2', en: 'c = 2' },
+        solution: { ar: '[f(3)-f(1)]/[3-1] = (9-1)/2 = 4. f\'(c) = 2c = 4 → c = 2', en: '[f(3)-f(1)]/[3-1] = 8/2 = 4. f\'(c) = 2c = 4 → c = 2' }
+    },
+    // Section 3: Exercise 3 - f(x) = x³ + x², [0, 1]
+    {
+        id: 11, section: 3,
+        q: { ar: '<strong>تمرين 3 (مسألة 11):</strong> f(x) = x³ + x² على [0, 1]. هل تنطبق نظرية رول؟ (نعم/لا)', en: '<strong>Exercise 3 (Problem 11):</strong> f(x) = x³ + x² on [0, 1]. Does Rolle\'s theorem apply? (Yes/No)' },
+        svg: svgGraphs.exercise_3,
+        answer: { ar: 'لا', en: 'No' },
+        solution: { ar: 'f(0) = 0, f(1) = 2. f(0) ≠ f(1)، إذن نظرية رول لا تنطبق', en: 'f(0) = 0, f(1) = 2. f(0) ≠ f(1), so Rolle\'s theorem does not apply' }
+    },
+    {
+        id: 12, section: 3,
+        q: { ar: '<strong>تمرين 3 (مسألة 12):</strong> طبق MVT: أوجد c حيث f\'(c) = [f(1)-f(0)]/[1-0].', en: '<strong>Exercise 3 (Problem 12):</strong> Apply MVT: Find c where f\'(c) = [f(1)-f(0)]/[1-0].' },
+        answer: { ar: 'c = (-1+sqrt(13))/3', en: 'c = (-1+sqrt(13))/3' },
+        solution: { ar: 'f\'(x) = 3x² + 2x. [f(1)-f(0)]/1 = 2. 3c² + 2c = 2 → 3c² + 2c - 2 = 0 → c = (-2±√(4+24))/6 = (-2±√28)/6 = (-1±√7)/3. نأخذ c = (-1+√7)/3 ≈ 0.549 ∈ (0,1)', en: '3c² + 2c = 2 → c = (-1+√7)/3 ≈ 0.549' }
+    },
+    {
+        id: 13, section: 3,
+        q: { ar: '<strong>تمرين 4 (مسألة 13):</strong> f(x) = x³ + x² على [-1, 1]. هل تنطبق نظرية رول؟ (نعم/لا)', en: '<strong>Exercise 4 (Problem 13):</strong> f(x) = x³ + x² on [-1, 1]. Does Rolle\'s theorem apply? (Yes/No)' },
+        answer: { ar: 'نعم', en: 'Yes' },
+        solution: { ar: 'f(-1) = -1+1 = 0, f(1) = 1+1 = 2. f(-1) ≠ f(1)، إذن نظرية رول لا تنطبق... تصحيح: f(-1) = 0, f(1) = 2. لا تنطبق نظرية رول', en: 'f(-1) = 0, f(1) = 2. f(-1) ≠ f(1), so Rolle\'s theorem does NOT apply' }
+    },
+    {
+        id: 14, section: 3,
+        q: { ar: '<strong>تمرين 4 (مسألة 14):</strong> طبق MVT على [-1, 1]: أوجد c.', en: '<strong>Exercise 4 (Problem 14):</strong> Apply MVT on [-1, 1]: Find c.' },
+        answer: { ar: 'c = 1/sqrt(3)', en: 'c = 1/sqrt(3)' },
+        solution: { ar: '[f(1)-f(-1)]/[1-(-1)] = (2-0)/2 = 1. f\'(c) = 3c² + 2c = 1 → 3c² + 2c - 1 = 0 → (3c-1)(c+1) = 0 → c = 1/3 أو c = -1. نأخذ c = 1/3 ∈ (-1,1)', en: '3c² + 2c - 1 = 0 → c = 1/3 ∈ (-1,1)' }
+    },
+    {
+        id: 15, section: 3,
+        q: { ar: '<strong>س مشابه:</strong> f(x) = x³ - 3x على [-√3, √3]. أوجد c لنظرية رول.', en: '<strong>Similar:</strong> f(x) = x³ - 3x on [-√3, √3]. Find c for Rolle\'s theorem.' },
+        answer: { ar: 'c = 1 أو c = -1', en: 'c = 1 or c = -1' },
+        solution: { ar: 'f(-√3) = -3√3 + 3√3 = 0, f(√3) = 0. f\'(x) = 3x² - 3 = 0 → x² = 1 → x = ±1', en: 'f\'(x) = 3x² - 3 = 0 → x = ±1' }
+    },
+    // Section 4: Exercise 5-6 - f(x) = sin x
+    {
+        id: 16, section: 4,
+        q: { ar: '<strong>تمرين 5 (مسألة 16):</strong> f(x) = sin x على [0, π/2]. هل تنطبق نظرية رول؟ (نعم/لا)', en: '<strong>Exercise 5 (Problem 16):</strong> f(x) = sin x on [0, π/2]. Does Rolle\'s theorem apply? (Yes/No)' },
+        svg: svgGraphs.exercise_5,
+        answer: { ar: 'لا', en: 'No' },
+        solution: { ar: 'f(0) = 0, f(π/2) = 1. f(0) ≠ f(π/2)، إذن نظرية رول لا تنطبق', en: 'f(0) = 0, f(π/2) = 1. f(0) ≠ f(π/2), so Rolle\'s theorem does not apply' }
+    },
+    {
+        id: 17, section: 4,
+        q: { ar: '<strong>تمرين 5 (مسألة 17):</strong> طبق MVT: أوجد c حيث f\'(c) = [f(π/2)-f(0)]/[π/2-0].', en: '<strong>Exercise 5 (Problem 17):</strong> Apply MVT: Find c where f\'(c) = [f(π/2)-f(0)]/[π/2-0].' },
+        answer: { ar: 'c = arccos(2/pi)', en: 'c = arccos(2/pi)' },
+        solution: { ar: '[f(π/2)-f(0)]/(π/2) = (1-0)/(π/2) = 2/π. f\'(c) = cos(c) = 2/π → c = arccos(2/π) ≈ 0.881', en: 'cos(c) = 2/π → c = arccos(2/π) ≈ 0.881' }
+    },
+    {
+        id: 18, section: 4,
+        q: { ar: '<strong>تمرين 6 (مسألة 18):</strong> f(x) = sin x على [-π, 0]. هل تنطبق نظرية رول؟ (نعم/لا)', en: '<strong>Exercise 6 (Problem 18):</strong> f(x) = sin x on [-π, 0]. Does Rolle\'s theorem apply? (Yes/No)' },
+        answer: { ar: 'نعم', en: 'Yes' },
+        solution: { ar: 'f(-π) = 0, f(0) = 0. f(-π) = f(0) = 0 ✓. sin x متصلة وقابلة للاشتقاق على R', en: 'f(-π) = 0, f(0) = 0. f(-π) = f(0) = 0 ✓. sin x is continuous and differentiable on R' }
+    },
+    {
+        id: 19, section: 4,
+        q: { ar: '<strong>تمرين 6 (مسألة 19):</strong> أوجد c التي تحقق نظرية رول: f\'(c) = 0.', en: '<strong>Exercise 6 (Problem 19):</strong> Find c satisfying Rolle\'s theorem: f\'(c) = 0.' },
+        answer: { ar: 'c = -pi/2', en: 'c = -pi/2' },
+        solution: { ar: 'f\'(x) = cos(x) = 0 → x = -π/2 (في الفترة (-π, 0))', en: 'f\'(x) = cos(x) = 0 → x = -π/2 ∈ (-π, 0)' }
+    },
+    {
+        id: 20, section: 4,
+        q: { ar: '<strong>س مشابه:</strong> f(x) = sin x على [0, π]. أوجد c لنظرية رول.', en: '<strong>Similar:</strong> f(x) = sin x on [0, π]. Find c for Rolle\'s theorem.' },
+        answer: { ar: 'c = pi/2', en: 'c = pi/2' },
+        solution: { ar: 'f(0) = 0, f(π) = 0. f\'(x) = cos(x) = 0 → x = π/2 ∈ (0, π)', en: 'f(0) = 0, f(π) = 0. f\'(x) = cos(x) = 0 → x = π/2 ∈ (0, π)' }
+    }
+];
+
+function showSaveIndicator() {
+    const indicator = document.getElementById('saveIndicator');
+    indicator.classList.add('show');
+    if (saveIndicatorTimeout) clearTimeout(saveIndicatorTimeout);
+    saveIndicatorTimeout = setTimeout(() => indicator.classList.remove('show'), 1500);
+}
+
+function saveState() {
+    try {
+        const answers = {};
+        examQuestions.forEach(q => {
+            const input = document.getElementById('answer-' + q.id);
+            if (input) answers[q.id] = input.value;
+        });
+        const state = {
+            lang: currentLang,
+            studentName: document.getElementById('studentName').value,
+            studentClass: document.getElementById('studentClass').value,
+            examDate: document.getElementById('examDate').value,
+            answers: answers,
+            timeRemaining: timeRemaining,
+            savedAt: Date.now()
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        showSaveIndicator();
+    } catch (e) { console.error('Save error:', e); }
+}
+
+function loadState() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        return saved ? JSON.parse(saved) : null;
+    } catch (e) { return null; }
+}
+
+function restoreAnswers(answers) {
+    if (!answers) return;
+    examQuestions.forEach(q => {
+        const input = document.getElementById('answer-' + q.id);
+        if (input && answers[q.id] !== undefined) {
+            input.value = answers[q.id];
+        }
+    });
+}
+
+function clearAllAnswers() {
+    const msg = currentLang === 'ar' ? '⚠️ هل أنت متأكد من مسح جميع الإجابات؟' : '⚠️ Clear all answers?';
+    if (confirm(msg)) {
+        examQuestions.forEach(q => {
+            const input = document.getElementById('answer-' + q.id);
+            if (input) {
+                input.value = '';
+                input.classList.remove('correct-input', 'incorrect-input');
+            }
+            const sol = document.getElementById('solution-' + q.id);
+            if (sol) sol.classList.remove('show');
+        });
+        localStorage.removeItem(STORAGE_KEY);
+    }
+}
+
+function setLanguage(lang) {
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.getElementById('btn-ar').classList.toggle('active', lang === 'ar');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.body.classList.toggle('en-mode', lang === 'en');
+    renderExam();
+}
+
+function renderExam() {
+    const container = document.getElementById('exam-content');
+    let html = '';
+    
+    const sectionTitles = {
+        1: { ar: '🔹 القسم 1: تمرين 1 - f(x) = x² + 1, [-2, 2] (مسائل 1-5)', en: '🔹 Section 1: Exercise 1 - f(x) = x² + 1, [-2, 2] (Problems 1-5)' },
+        2: { ar: '🔹 القسم 2: تمرين 2 - f(x) = x² + 1, [0, 2] (مسائل 6-10)', en: '🔹 Section 2: Exercise 2 - f(x) = x² + 1, [0, 2] (Problems 6-10)' },
+        3: { ar: '🔹 القسم 3: تمارين 3-4 - f(x) = x³ + x² (مسائل 11-15)', en: '🔹 Section 3: Exercises 3-4 - f(x) = x³ + x² (Problems 11-15)' },
+        4: { ar: '🔹 القسم 4: تمارين 5-6 - f(x) = sin x (مسائل 16-20)', en: '🔹 Section 4: Exercises 5-6 - f(x) = sin x (Problems 16-20)' }
+    };
+    
+    const badgeClasses = ['module-1', 'module-2', 'module-3', 'module-4'];
+    
+    for (let sec = 1; sec <= 4; sec++) {
+        html += '<section class="bg-white p-6 rounded-2xl shadow-lg border-2 border-amber-100">';
+        html += '<div class="text-center mb-4"><span class="module-badge ' + badgeClasses[sec-1] + '">' + sectionTitles[sec][currentLang] + '</span></div>';
+        html += '<div class="space-y-6">';
+        
+        examQuestions.filter(q => q.section === sec).forEach((q) => {
+            html += '<div class="border-r-4 border-amber-400 pr-4 py-3" id="question-' + q.id + '">';
+            html += '<div class="mb-3"><strong class="text-amber-700">' + q.id + '.</strong> <span class="arabic-math">' + q.q[currentLang] + '</span></div>';
+            
+            if (q.svg) html += '<div class="graph-container">' + q.svg + '</div>';
+            
+            html += '<textarea id="answer-' + q.id + '" class="answer-input" placeholder="' + (currentLang === 'ar' ? 'اكتب إجابتك هنا...' : 'Write your answer here...') + '" oninput="saveState()"></textarea>';
+            
+            html += '<div class="flex gap-2 mt-2">';
+            html += '<button onclick="checkAnswer(' + q.id + ')" class="check-btn">' + (currentLang === 'ar' ? '✓ تحقق' : '✓ Check') + '</button>';
+            html += '<button onclick="toggleSolution(' + q.id + ')" class="show-answer-btn">' + (currentLang === 'ar' ? '📖 أظهر الحل' : '📖 Show Solution') + '</button>';
+            html += '</div>';
+            
+            html += '<div id="solution-' + q.id + '" class="solution-box">';
+            html += '<strong class="text-green-700">' + (currentLang === 'ar' ? '✅ الإجابة الصحيحة: ' : '✅ Correct Answer: ') + '</strong>';
+            html += '<span class="arabic-math text-green-700">' + q.answer[currentLang] + '</span><br>';
+            html += '<span class="text-sm text-green-700 mt-2 block arabic-math">' + q.solution[currentLang] + '</span>';
+            html += '</div>';
+            
+            html += '</div>';
+        });
+        
+        html += '</div></section>';
+    }
+    
+    container.innerHTML = html;
+}
+
+function checkAnswer(qId) {
+    const q = examQuestions.find(x => x.id === qId);
+    const input = document.getElementById('answer-' + qId);
+    const userAnswer = input.value.trim();
+    
+    if (!userAnswer) {
+        alert(currentLang === 'ar' ? '⚠️ الرجاء كتابة إجابة أولاً' : '⚠️ Please write an answer first');
+        return;
+    }
+    
+    let isCorrect = false;
+    const normalizedUser = userAnswer.toLowerCase().replace(/\s/g, '');
+    const normalizedAnswer = q.answer[currentLang].toLowerCase().replace(/\s/g, '');
+    
+    isCorrect = normalizedUser.includes(normalizedAnswer) || 
+                normalizedAnswer.includes(normalizedUser) ||
+                normalizedUser === normalizedAnswer;
+    
+    // Check for equivalent forms
+    if (!isCorrect) {
+        const equivalents = {
+            'نعم': ['yes', 'نعم،', 'yes,'],
+            'لا': ['no', 'لا،', 'no,'],
+            'c=0': ['0', 'x=0', 'c=0'],
+            'c=1': ['1', 'x=1', 'c=1'],
+            'c=2': ['2', 'x=2', 'c=2'],
+            'c=-1': ['-1', 'x=-1', 'c=-1'],
+            'c=pi/2': ['π/2', 'pi/2', 'c=pi/2'],
+            'c=-pi/2': ['-π/2', '-pi/2', 'c=-pi/2']
+        };
+        for (const [key, values] of Object.entries(equivalents)) {
+            if (normalizedAnswer.includes(key.replace(/\s/g, ''))) {
+                for (const val of values) {
+                    if (normalizedUser.includes(val.replace(/\s/g, ''))) {
+                        isCorrect = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    input.classList.remove('correct-input', 'incorrect-input');
+    if (isCorrect) {
+        input.classList.add('correct-input');
+    } else {
+        input.classList.add('incorrect-input');
+    }
+    
+    const solution = document.getElementById('solution-' + qId);
+    solution.classList.add('show');
+    
+    if (isCorrect) {
+        alert(currentLang === 'ar' ? '✅ إجابة صحيحة! أحسنت!' : '✅ Correct answer! Well done!');
+    } else {
+        alert(currentLang === 'ar' ? '❌ إجابة غير صحيحة. راجع الحل.' : '❌ Incorrect answer. Check the solution.');
+    }
+}
+
+function toggleSolution(qId) {
+    const solution = document.getElementById('solution-' + qId);
+    solution.classList.toggle('show');
+}
+
+function checkAllAnswers() {
+    let correctCount = 0;
+    examQuestions.forEach(q => {
+        const input = document.getElementById('answer-' + q.id);
+        const userAnswer = input.value.trim();
+        if (!userAnswer) return;
+        
+        let isCorrect = false;
+        const normalizedUser = userAnswer.toLowerCase().replace(/\s/g, '');
+        const normalizedAnswer = q.answer[currentLang].toLowerCase().replace(/\s/g, '');
+        
+        isCorrect = normalizedUser.includes(normalizedAnswer) || 
+                    normalizedAnswer.includes(normalizedUser) ||
+                    normalizedUser === normalizedAnswer;
+        
+        input.classList.remove('correct-input', 'incorrect-input');
+        if (isCorrect) {
+            input.classList.add('correct-input');
+            correctCount++;
+        } else {
+            input.classList.add('incorrect-input');
+        }
+    });
+    
+    const score = Math.round((correctCount / TOTAL_QUESTIONS) * 100);
+    alert(currentLang === 'ar' ? 
+        `📊 نتيجتك: ${correctCount}/${TOTAL_QUESTIONS} = ${score}%` : 
+        `📊 Your score: ${correctCount}/${TOTAL_QUESTIONS} = ${score}%`);
+}
+
+function showAllSolutions() {
+    examQuestions.forEach(q => {
+        const solution = document.getElementById('solution-' + q.id);
+        solution.classList.add('show');
+    });
+}
+
+function startTimer() {
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+        timeRemaining--;
+        updateTimerDisplay();
+        if (timeRemaining % 60 === 0) saveState();
+        if (timeRemaining <= 600) document.getElementById('timer').classList.add('timer-warning');
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            alert(currentLang === 'ar' ? "⏰ انتهى الوقت!" : "⏰ Time's up!");
+            checkAllAnswers();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const m = Math.floor(timeRemaining / 60);
+    const s = timeRemaining % 60;
+    document.getElementById('timer').textContent = m.toString().padStart(2,'0') + ':' + s.toString().padStart(2,'0');
+}
+
+function gradeExam() {
+    let correctCount = 0;
+    const sectionScores = [0, 0, 0, 0];
+    const sectionCounts = [5, 5, 5, 5];
+    
+    examQuestions.forEach(q => {
+        const input = document.getElementById('answer-' + q.id);
+        const userAnswer = input.value.trim();
+        if (!userAnswer) return;
+        
+        let isCorrect = false;
+        const normalizedUser = userAnswer.toLowerCase().replace(/\s/g, '');
+        const normalizedAnswer = q.answer[currentLang].toLowerCase().replace(/\s/g, '');
+        
+        isCorrect = normalizedUser.includes(normalizedAnswer) || 
+                    normalizedAnswer.includes(normalizedUser) ||
+                    normalizedUser === normalizedAnswer;
+        
+        input.classList.remove('correct-input', 'incorrect-input');
+        if (isCorrect) {
+            input.classList.add('correct-input');
+            correctCount++;
+            sectionScores[q.section - 1]++;
+        } else {
+            input.classList.add('incorrect-input');
+        }
+    });
+    
+    const score = Math.round((correctCount / TOTAL_QUESTIONS) * 100);
+    document.getElementById('res-total').textContent = score + ' / 100';
+    document.getElementById('res-name').textContent = document.getElementById('studentName').value || (currentLang === 'ar' ? 'بطل' : 'Champion');
+    document.getElementById('res-date').textContent = new Date().toLocaleDateString(currentLang === 'ar' ? 'ar-AE' : 'en-US');
+    
+    const pc = document.getElementById('sections-performance');
+    pc.innerHTML = '';
+    const sectionTitles = {
+        1: { ar: 'تمرين 1 - x²+1 على [-2,2]', en: 'Exercise 1 - x²+1 on [-2,2]' },
+        2: { ar: 'تمرين 2 - x²+1 على [0,2]', en: 'Exercise 2 - x²+1 on [0,2]' },
+        3: { ar: 'تمارين 3-4 - x³+x²', en: 'Exercises 3-4 - x³+x²' },
+        4: { ar: 'تمارين 5-6 - sin x', en: 'Exercises 5-6 - sin x' }
+    };
+    
+    for (let i = 0; i < 4; i++) {
+        pc.innerHTML += '<div class="flex justify-between items-center p-3 bg-white rounded-lg"><span class="text-gray-700">' + sectionTitles[i+1][currentLang] + '</span><span class="font-bold text-amber-700">' + sectionScores[i] + '/' + sectionCounts[i] + '</span></div>';
+    }
+    
+    const badge = document.getElementById('success-badge');
+    document.getElementById('success-percent').textContent = score + '%';
+    
+    if (currentLang === 'ar') {
+        if (score >= 90) { badge.textContent = '🌟 ممتاز جداً!'; badge.className = 'success-badge grade-excellent'; }
+        else if (score >= 75) { badge.textContent = '👏 ممتاز!'; badge.className = 'success-badge grade-good'; }
+        else if (score >= 50) { badge.textContent = '👍 جيد'; badge.className = 'success-badge grade-pass'; }
+        else { badge.textContent = '💪 حاول مرة أخرى'; badge.className = 'success-badge grade-fail'; }
+    } else {
+        if (score >= 90) { badge.textContent = '🌟 Outstanding!'; badge.className = 'success-badge grade-excellent'; }
+        else if (score >= 75) { badge.textContent = '👏 Excellent!'; badge.className = 'success-badge grade-good'; }
+        else if (score >= 50) { badge.textContent = '👍 Good'; badge.className = 'success-badge grade-pass'; }
+        else { badge.textContent = '💪 Try Again'; badge.className = 'success-badge grade-fail'; }
+    }
+    
+    document.getElementById('results-panel').classList.remove('hidden');
+    document.getElementById('results-panel').scrollIntoView({ behavior: 'smooth' });
+    if (timerInterval) clearInterval(timerInterval);
+}
+
+function sendResultsToEmail() {
+    const btn = document.getElementById('sendEmailBtn');
+    const status = document.getElementById('emailStatus');
+    btn.disabled = true;
+    btn.textContent = currentLang === 'ar' ? '⏳ جاري الإرسال...' : '⏳ Sending...';
+    
+    const name = document.getElementById('studentName').value || 'N/A';
+    const studentClass = document.getElementById('studentClass').value || 'N/A';
+    const date = document.getElementById('examDate').value || new Date().toLocaleDateString();
+    const score = document.getElementById('res-total').textContent;
+    const successRate = document.getElementById('success-percent').textContent;
+    const badge = document.getElementById('success-badge').textContent;
+    
+    let answersHTML = '<div style="font-family:Arial; direction:rtl;">';
+    answersHTML += '<h2>📐 ' + (currentLang === 'ar' ? 'نتيجة امتحان نظرية رول والقيمة المتوسطة' : 'Rolle\'s Theorem & MVT Exam Result') + '</h2>';
+    answersHTML += '<p><strong>' + (currentLang === 'ar' ? 'الاسم' : 'Name') + ':</strong> ' + name + '</p>';
+    answersHTML += '<p><strong>' + (currentLang === 'ar' ? 'الشعبة' : 'Class') + ':</strong> ' + studentClass + '</p>';
+    answersHTML += '<p><strong>' + (currentLang === 'ar' ? 'التاريخ' : 'Date') + ':</strong> ' + date + '</p>';
+    answersHTML += '<p><strong>' + (currentLang === 'ar' ? 'الدرجة' : 'Score') + ':</strong> ' + score + ' (' + successRate + '%)</p>';
+    answersHTML += '<p><strong>' + (currentLang === 'ar' ? 'التقدير' : 'Grade') + ':</strong> ' + badge + '</p>';
+    answersHTML += '<hr><h3>' + (currentLang === 'ar' ? 'تفاصيل الإجابات:' : 'Answer Details:') + '</h3><table style="width:100%; border-collapse:collapse;">';
+    answersHTML += '<tr style="background:#d97706; color:white;"><th style="padding:8px; border:1px solid #ddd;">#</th><th style="padding:8px; border:1px solid #ddd;">' + (currentLang === 'ar' ? 'السؤال' : 'Question') + '</th><th style="padding:8px; border:1px solid #ddd;">' + (currentLang === 'ar' ? 'إجابة الطالب' : 'Student Answer') + '</th><th style="padding:8px; border:1px solid #ddd;">' + (currentLang === 'ar' ? 'الصحيحة' : 'Correct') + '</th><th style="padding:8px; border:1px solid #ddd;">' + (currentLang === 'ar' ? 'النتيجة' : 'Result') + '</th></tr>';
+    
+    examQuestions.forEach(q => {
+        const input = document.getElementById('answer-' + q.id);
+        const userAnswer = input.value.trim() || (currentLang === 'ar' ? 'لم يجب' : 'No answer');
+        let isCorrect = false;
+        const normalizedUser = userAnswer.toLowerCase().replace(/\s/g, '');
+        const normalizedAnswer = q.answer[currentLang].toLowerCase().replace(/\s/g, '');
+        isCorrect = normalizedUser.includes(normalizedAnswer) || normalizedAnswer.includes(normalizedUser) || normalizedUser === normalizedAnswer;
+        const rowBg = isCorrect ? '#dcfce7' : '#fee2e2';
+        answersHTML += '<tr style="background:' + rowBg + ';"><td style="padding:8px; border:1px solid #ddd; text-align:center;">' + q.id + '</td><td style="padding:8px; border:1px solid #ddd;">' + q.q[currentLang].replace(/<[^>]+>/g, '') + '</td><td style="padding:8px; border:1px solid #ddd;">' + userAnswer + '</td><td style="padding:8px; border:1px solid #ddd;">' + q.answer[currentLang] + '</td><td style="padding:8px; border:1px solid #ddd; text-align:center;">' + (isCorrect ? '✅' : '❌') + '</td></tr>';
+    });
+    
+    answersHTML += '</table></div>';
+    
+    const templateParams = {
+        to_email: TARGET_EMAIL,
+        student_name: name,
+        student_class: studentClass,
+        exam_date: date,
+        total_score: score,
+        success_rate: successRate,
+        grade: badge,
+        answers_table: answersHTML
+    };
+    
+    emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams)
+        .then(() => {
+            status.textContent = currentLang === 'ar' ? '✅ تم الإرسال بنجاح!' : '✅ Sent successfully!';
+            status.style.color = '#16a34a';
+            btn.textContent = currentLang === 'ar' ? '✓ تم' : '✓ Sent';
+            alert(currentLang === 'ar' ? 'تم إرسال النتيجة للمعلم بنجاح!' : 'Result sent to teacher successfully!');
+        })
+        .catch((error) => {
+            status.textContent = currentLang === 'ar' ? '❌ فشل الإرسال' : '❌ Failed to send';
+            status.style.color = '#dc2626';
+            btn.disabled = false;
+            btn.textContent = currentLang === 'ar' ? '📧 حاول مرة أخرى' : '📧 Try Again';
+            alert(currentLang === 'ar' ? 'فشل الإرسال: ' + error.text : 'Failed: ' + error.text);
+        });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    const saved = loadState();
+    if (saved) {
+        currentLang = saved.lang || 'ar';
+        timeRemaining = saved.timeRemaining !== undefined ? saved.timeRemaining : TOTAL_TIME;
+        document.getElementById('btn-ar').classList.toggle('active', currentLang === 'ar');
+        document.getElementById('btn-en').classList.toggle('active', currentLang === 'en');
+        document.body.classList.toggle('en-mode', currentLang === 'en');
+    }
+    renderExam();
+    if (saved) {
+        if (saved.studentName) document.getElementById('studentName').value = saved.studentName;
+        if (saved.studentClass) document.getElementById('studentClass').value = saved.studentClass;
+        if (saved.examDate) document.getElementById('examDate').value = saved.examDate;
+        if (saved.answers) restoreAnswers(saved.answers);
+    }
+    startTimer();
+    window.addEventListener('beforeunload', () => saveState());
+});
+</script>
+</body>
+</html>
